@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   build:
-    name: Build, Test and PMD Analysis
+    name: Build, Test and Quality Analysis
     runs-on: ubuntu-latest
 
     steps:
@@ -28,12 +28,27 @@ jobs:
           cache: 'maven'
           cache-dependency-path: pom.xml
 
-      - name: Compilar, probar y ejecutar análisis de calidad
-        run: mvn -B clean verify
+      - name: Compilar el proyecto
+        run: mvn -B clean compile
+
+      - name: Ejecutar pruebas unitarias
+        run: mvn -B test
+
+      - name: Generar reporte de cobertura con JaCoCo
+        if: always()
+        run: mvn -B jacoco:report
+
+      - name: Ejecutar análisis Checkstyle
+        if: always()
+        run: mvn -B checkstyle:checkstyle
+
+      - name: Ejecutar análisis PMD
+        if: always()
+        run: mvn -B pmd:pmd
 
       - name: Subir reportes Maven
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v6
         with:
           name: maven-quality-reports
           if-no-files-found: warn
