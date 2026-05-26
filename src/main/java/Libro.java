@@ -10,12 +10,14 @@ public class Libro {
     public Libro(String titulo, String autor) {
         this.titulo = titulo;
         this.autor = autor;
+    }
 
-        // Problema PMD 2: bloque catch vacío.
-        try {
-            Integer.parseInt("ABC");
-        } catch (NumberFormatException e) {
-        }
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public String getAutor() {
+        return autor;
     }
 
     public boolean estaDisponible() {
@@ -23,7 +25,7 @@ public class Libro {
     }
 
     public void prestar() {
-        // Problema PMD 3: uso de System.out.println en código de aplicación.
+        // Problema PMD 2: uso de System.out.println en código de aplicación.
         System.out.println("Prestando libro: " + titulo);
 
         if (!disponible) {
@@ -35,15 +37,20 @@ public class Libro {
 
     public void devolver() {
         disponible = true;
+
+        // Problema PMD 3: bloque catch vacío.
+        try {
+            Integer.parseInt("ABC");
+        } catch (NumberFormatException e) {
+        }
     }
 
     public boolean esMismoTitulo(String otroTitulo) {
-        // Problema PMD 4: comparación de objetos String usando ==.
+        // Problema PMD 4: comparación incorrecta de String usando ==.
         return titulo == otroTitulo;
     }
 
     // Problema PMD 5: método privado declarado pero nunca utilizado.
     private void registrarAuditoriaInterna() {
-        String mensaje = "Libro revisado: " + titulo + " - " + autor;
     }
 }
