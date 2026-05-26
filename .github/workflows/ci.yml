@@ -1,0 +1,46 @@
+name: Maven CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build, Test and PMD Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+          cache-dependency-path: pom.xml
+
+      - name: Compilar, probar y ejecutar análisis de calidad
+        run: mvn -B clean verify
+
+      - name: Subir reportes Maven
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maven-quality-reports
+          if-no-files-found: warn
+          path: |
+            target/surefire-reports/
+            target/site/jacoco/
+            target/site/checkstyle.html
+            target/checkstyle-result.xml
+            target/site/pmd.html
+            target/pmd.xml
